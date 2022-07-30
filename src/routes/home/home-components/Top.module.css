@@ -1,0 +1,70 @@
+.container {
+    height: 100vh;
+    background: url('../../../images/cover.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translate(0, -50%);
+}
+
+.jokeText {
+    color: #e98d15;
+    font-size: 1.4rem;
+    text-align: center;
+}
+
+.titleText {
+    color: white;
+    font-size: 5rem;
+    text-align: center;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+@media (max-width: 1000px) {
+    .contentContainer{
+        transform: translate(0, 0);
+    }
+    .container {
+        padding: 10px;
+    }
+    .jokeText {
+        font-size: 1rem;
+    }
+    .titleText {
+        font-size:  2rem;
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1350px) and (orientation: landscape){
+    .contentContainer{
+        transform: translate(0, 0);
+    }
+    .container {
+        padding: 10px;
+    }
+    .jokeText {
+        font-size: 1.25rem;
+    }
+    .titleText {
+        font-size:  2.5rem;
+    }
+}

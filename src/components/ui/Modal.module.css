@@ -1,0 +1,51 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .675);
+    height: 100vh;
+    width: 100%;
+    z-index: 150;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.innerContainer {
+    background-color: white;
+    width: 50%;
+    height: 60%;
+    box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.46);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.title {
+    font-size: 1.5rem;
+    text-transform: capitalize;
+    color: #e98d15;
+    text-align: center;
+}
+
+.text {
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+@media (max-width: 1000px) and (orientation: portrait) {
+    .innerContainer {
+        width: 85%;
+    }
+}
+
+
+@media (max-width: 1200px) and (orientation: landscape) {
+    .innerContainer {
+        width: 65%;
+    }
+}
+

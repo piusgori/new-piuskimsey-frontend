@@ -1,0 +1,93 @@
+.container {
+    padding: 1.5rem;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.absoluteContainer {
+    width: 100%;
+    background: transparent;
+    position: fixed;
+    animation: slide-down .8s ease-out forwards;
+    top: 0;
+    left: 0;
+}
+
+.stickyContainer {
+    width: 100%;
+    background-color: black;
+    position: fixed;
+    box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.06);
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.text {
+    color: white;
+    transition: .4s;
+    text-decoration: none;
+    padding: 0 1rem;
+}
+
+.activeText {
+    color: #e98d15;
+    transition: .4s;
+    text-decoration: none;
+    padding: 0 1rem;
+}
+
+.text:hover{
+    color: #e98d15;
+    cursor: pointer;
+} 
+
+.navigationLinks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes slide-down{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+@media (max-width: 800px) and (orientation: portrait){
+    .container {
+        padding: 1rem;
+    }
+
+    .text {
+        padding: 0 .6rem;
+        font-size: .8rem;
+    }
+
+    .activeText {
+        padding: 0 .6rem;
+        font-size: .8rem;
+    }
+}
+
+@media (max-width: 1000px) and (orientation: landscape){
+    .container {
+        padding: 1rem;
+    }
+
+
+    .text {
+        padding: 0 .6rem;
+        font-size: .8rem;
+    }
+
+    .activeText {
+        padding: 0 .6rem;
+        font-size: .8rem;
+    }
+}

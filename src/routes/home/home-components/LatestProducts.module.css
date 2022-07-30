@@ -1,0 +1,27 @@
+.container {
+    background-color: white;
+    padding: 75px 10px;
+}
+
+.title {
+    font-size: 2.5rem;
+    text-transform: capitalize;
+    color: rgb(60, 60, 60);
+    margin-bottom: .75rem;
+    text-align: center;
+}
+
+.text {
+    padding-bottom: .75rem;
+    color: #646464;
+    text-align: center;
+    font-size: 1.25rem;
+}
+
+.productsContainer {
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: stretch;
+}

@@ -1,0 +1,83 @@
+.container {
+    background: white;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 1s;
+    overflow: hidden;
+}
+
+.ring {
+    position: absolute;
+    height: 300px;
+    width: 300px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px black;
+    animation: ring 2s linear infinite;
+}
+
+@keyframes ring{
+    0%{
+        transform: rotate(0deg);
+        box-shadow: 1px 5px 2px #e65c00;
+    }
+    50%{
+        transform: rotate(180deg);
+        box-shadow: 1px 5px 2px #18b201;
+    }
+    100%{
+        transform: rotate(360deg);
+        box-shadow: 1px 5px 2px #0456c8;
+    }
+}
+
+.ring::before{
+    position: absolute;
+    content: '';
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0 .45);
+}
+
+.picture{
+    height: 10rem;
+}
+
+.down{
+    display: flex;
+    flex-direction: column;
+}
+
+.text{
+    text-align: center;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: #484a46;
+}
+
+@media (max-width: 300px) and (orientation: portrait){
+    .picture{
+        height: 6rem;
+    }
+
+    .ring{
+        height: 225px;
+        width: 225px;
+    }
+}
+
+@media (max-width: 1000px) and (orientation: landscape){
+    .picture{
+        height: 7.5rem;
+    }
+    .ring{
+        height: 250px;
+        width: 250px;
+    }
+}

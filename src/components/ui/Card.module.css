@@ -1,0 +1,73 @@
+.container {
+    min-height: fit-content;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.46);
+    width: 22.5%;
+    margin: 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.innerContainer {
+    height: 95%;
+    width: 90%;
+}
+
+.imageContainer {
+    width: 100%;
+    max-height: 52.5%;
+    overflow: hidden;
+}
+
+.image {
+    width: 100%;
+}
+
+.title {
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.priceContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.oldPrice {
+    color: #646464;
+    text-decoration: line-through;
+}
+
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 700px) and (orientation: portrait){
+    .container{
+        width: 80%;
+    }
+}
+
+@media screen and (min-width: 700px) and (max-width: 1000px) and (orientation: portrait){
+    .container{
+        width: 45%;
+    }
+}
+
+@media screen and (max-width: 1000px) and (orientation: landscape){
+    .container{
+        width: 45%;
+    }
+}
+
+@media screen and (min-width: 1000px) and (max-width: 1300px) and (orientation: landscape) {
+    .container{
+        width: 45%;
+    }
+}

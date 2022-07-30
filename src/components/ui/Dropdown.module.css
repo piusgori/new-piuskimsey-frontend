@@ -1,0 +1,62 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .675);
+    height: 100vh;
+    width: 100%;
+    z-index: 150;
+}
+
+.dropdownContainer {
+    height: 100%;
+    width: 30%;
+    background-color: white;
+    overflow: auto;
+    padding: 30px 20px;
+}
+
+.image {
+    height: 30px;
+}
+
+.hr {
+    margin: 15px 0;
+}
+
+.topIcon {
+    font-size: 1.5rem;
+    margin-right: 1.5rem;
+    transition: .5s;
+    color: rgb(75, 75, 75)
+}
+
+.topIcon:hover{
+    cursor: pointer;
+    color: #e98d15;
+} 
+
+.title {
+    color: #e98d15;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: bolder;
+}
+
+.text {
+    color: rgb(75, 75, 75);
+    font-size: .85rem;
+    text-decoration: none;
+}
+
+@media (max-width: 1000px) and (orientation: portrait){
+    .dropdownContainer {
+        width: 70%;
+    }
+}
+
+@media (max-width: 1000px) and (orientation: landscape){
+    .dropContendropdownContainer {
+        width: 50%;
+    }
+}

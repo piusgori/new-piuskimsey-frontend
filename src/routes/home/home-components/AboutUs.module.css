@@ -1,0 +1,34 @@
+.container {
+    background: url('../../../images/about.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    padding: 250px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.aboutContainer {
+    margin: 0 1rem;
+}
+
+.aboutTitle {
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    font-size: 2.5rem;
+}
+
+.aboutText {
+    text-align: center;
+    color: rgb(200, 200, 200);
+    font-size: 1.5rem;
+}
+
+@media (orientation: portrait){
+    .container {
+        flex-direction: column;
+    }
+}

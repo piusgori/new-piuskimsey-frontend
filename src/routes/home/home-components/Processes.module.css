@@ -1,0 +1,34 @@
+.container {
+    padding: 50px;
+    background-color: rgb(219, 219, 219);
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.icon {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #e98d15;
+}
+
+.header {
+    margin: 5px 0;
+}
+
+.text {
+    margin: 5px 0;
+}
+
+@media (max-width: 1000px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    .serviceContainer {
+        margin: 15px 0;
+    }
+}
