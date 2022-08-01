@@ -14,6 +14,11 @@ import SignupPage from '../routes/signup/SignupPage';
 import ForgotPasswordPage from '../routes/password-reset/ForgotPasswordPage';
 import PasswordResetPage from '../routes/password-reset/PasswordResetPage';
 import AddProductPage from '../routes/store/AddProductPage';
+import ProfilePage from '../routes/profile/ProfilePage';
+import AddCategoryPage from '../routes/store/AddCategoryPage';
+import AddRegionPage from '../routes/signup/AddRegionPage';
+import CartPage from '../routes/cart/CartPage';
+import OrderPage from '../routes/order/OrderPage';
 
 const Routing = () => {
 
@@ -42,11 +47,16 @@ const Routing = () => {
         <Route path='/login' element={<LoginPage></LoginPage>}></Route>
         <Route path='/signup' element={<SignupPage></SignupPage>}></Route>
         <Route path='/forgot-password' element={<ForgotPasswordPage></ForgotPasswordPage>}></Route>
-        <Route path='/password-reset' element={<PasswordResetPage></PasswordResetPage>}></Route>
+        <Route path='/password-reset/:token' element={<PasswordResetPage></PasswordResetPage>}></Route>
         <Route path='/search' element={<SearchPage></SearchPage>}></Route>
         <Route path='/store' element={<StorePage></StorePage>}></Route>
         <Route path='/add-product' element={<AddProductPage></AddProductPage>}></Route>
+        <Route path='/add-region' element={<AddRegionPage></AddRegionPage>}></Route>
+        <Route path='/add-category' element={<AddCategoryPage></AddCategoryPage>}></Route>
         <Route path='/category' element={<CategoryPage></CategoryPage>}></Route>
+        <Route path='/profile' element={<ProfilePage></ProfilePage>}></Route>
+        <Route path='/cart' element={<CartPage></CartPage>}></Route>
+        <Route path='/order' element={<OrderPage></OrderPage>}></Route>
       </Routes>
     </Fragment>
   )

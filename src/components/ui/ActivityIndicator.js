@@ -10,4 +10,4 @@ const ActivityIndicator = () => {
   )
 }
 
-export default ActivityIndicator
+export default ActivityIndicator;

@@ -8,7 +8,7 @@ import { useWindowScroll } from 'react-use';
 
 const Header = () => {
 
-    const { person, setIsDropdownVisible } = useContext(AppContext);
+    const { person, setIsDropdownVisible, logout } = useContext(AppContext);
     const location = useLocation();
     const { y } = useWindowScroll();
     const [isFirstHeader, setIsFirstHeader] = useState(true);
@@ -35,7 +35,7 @@ const Header = () => {
                     <div className={classes.navigationLinks}>
                         <NavLink className={isActive} to='/'>Home</NavLink>
                         {!person && <NavLink className={isActive} to='/login'>Login</NavLink>}
-                        {person && <p className={classes.text}>Logout</p>}
+                        {person && <p onClick={logout} className={classes.text}>Logout</p>}
                         <NavLink className={isActive} to='/search'><FontAwesomeIcon icon={faSearch}></FontAwesomeIcon></NavLink>
                     </div>
                 </div>
@@ -51,7 +51,7 @@ const Header = () => {
                     <div className={classes.navigationLinks}>
                         <NavLink className={isActive} to='/'>Home</NavLink>
                         {!person && <NavLink className={isActive} to='/login'>Login</NavLink>}
-                        {person && <p className={classes.text}>Logout</p>}
+                        {person && <p onClick={logout} className={classes.text}>Logout</p>}
                         <NavLink className={isActive} to='/search'><FontAwesomeIcon icon={faSearch}></FontAwesomeIcon></NavLink>
                     </div>
                 </div>

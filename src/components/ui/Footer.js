@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './Footer.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareSquare } from '@fortawesome/free-solid-svg-icons'
-import { faFacebook, faInstagram, faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faInstagram, faLinkedin, faTwitter, faFirefoxBrowser } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = () => {
   return (
@@ -26,6 +26,7 @@ const Footer = () => {
                 <p><a className={classes.icon} href="https://www.instagram.com/p.i_u.s/" target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faInstagram}></FontAwesomeIcon></a></p>
                 <p><a className={classes.icon} href='https://twitter.com/IanPius3?t=-Lf6Ul4gQdTTUQ7QVZwXUA&s=08' target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon></a></p>
                 <p><a className={classes.icon} href='https://www.linkedin.com/in/ian-pius-13b08b231' target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon></a></p>
+                <p><a className={classes.icon} href='https://piusgori.xyz' target='_blank' rel='noreferrer'><FontAwesomeIcon icon={faFirefoxBrowser} /></a></p>
             </div>
         </div>
     </div>

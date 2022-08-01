@@ -14,6 +14,10 @@ const Top = () => {
         navigate('/store')
     }
 
+    const goToCartHandler = () => {
+        navigate('/cart')
+    }
+
   return (
     <div className={classes.container}>
         <div className={classes.contentContainer}>
@@ -21,7 +25,7 @@ const Top = () => {
             <h1 className={classes.titleText}>Welcome to Piuskimsey</h1>
             <div className={classes.buttonContainer}>
                 <Button onClick={goToStoreHandler} style={buttonStyle}>Store</Button>
-                <Button style={buttonStyle}>Cart</Button>
+                <Button onClick={goToCartHandler} style={buttonStyle}>Cart</Button>
             </div>
 
         </div>

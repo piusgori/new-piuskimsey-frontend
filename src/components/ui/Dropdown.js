@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom'
 
 const Dropdown = () => {
 
-    const { setIsDropdownVisible, person } = useContext(AppContext);
+    const { setIsDropdownVisible, person, categories } = useContext(AppContext);
 
     const hideDropDownHandler = () => {
         setIsDropdownVisible(false);
@@ -24,23 +24,19 @@ const Dropdown = () => {
             <div className={classes.bottomContainer}>
                 {person && <hr className={classes.hr}></hr>}
                 {person && <h1 className={classes.title}>My Account</h1>}
-                {person && <p className={classes.text}><FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon> My Cart</p>}
-                {person && person.isAdmin && <p className={classes.text}><FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon> Add Item</p>}
-                {person && <p className={classes.text}><FontAwesomeIcon icon={faUser}></FontAwesomeIcon> My Account</p>}
+                <div className={classes.categoriesContainer}>
+                    {person && <NavLink onClick={hideDropDownHandler} to='/cart' className={classes.text}><FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon> My Cart</NavLink>}
+                    {person && person.isAdmin && <p className={classes.text}><FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon> Add Item</p>}
+                    {person && <NavLink onClick={hideDropDownHandler} to='/profile' className={classes.text}><FontAwesomeIcon icon={faUser}></FontAwesomeIcon> My Account</NavLink>}
+                </div>
                 <hr className={classes.hr}></hr>
                 <h1 className={classes.title}>Our Store</h1>
                 <NavLink onClick={hideDropDownHandler} to='/store' className={classes.text}><FontAwesomeIcon icon={faStore}></FontAwesomeIcon> Store</NavLink>
                 <hr className={classes.hr}></hr>
                 <h1 className={classes.title}>Our Categories</h1>
-                <NavLink onClick={hideDropDownHandler} to='/category' className={classes.text}>Foodstuff</NavLink>
-                <p className={classes.text}>Clothing</p>
-                <p className={classes.text}>Gaming</p>
-                <p className={classes.text}>Electronic Assets</p>
-                <p className={classes.text}>Fashion</p>
-                <p className={classes.text}>Stickers</p>
-                <p className={classes.text}>Photography</p>
-                <p className={classes.text}>Design</p>
-                <p className={classes.text}>Software Development</p>
+                <div className={classes.categoriesContainer}>
+                    {categories.map((cat) => <NavLink key={cat.id} onClick={hideDropDownHandler} to='/category' className={classes.text}>{cat.title}</NavLink>)}
+                </div>
             </div>
         </div>
     </div>

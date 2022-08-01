@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Button from '../../../components/ui/Button';
 import classes from './AddProductForm.module.css';
 import { Link } from 'react-router-dom';
+import { AppContext } from '../../../services/app-context';
 
 const AddProductForm = () => {
 
@@ -21,6 +22,8 @@ const AddProductForm = () => {
     const [descriptionInput, setDescriptionInput] = useState('');
     const [descriptionIsValid, setDescriptionIsValid] = useState(true);
     const [descriptionError, setDescriptionError] = useState('');
+
+    const { categories } = useContext(AppContext)
 
     const imageInputRef = useRef();
 
@@ -71,15 +74,13 @@ const AddProductForm = () => {
             {imageIsValid && imageInput && <div className={classes.imageDisplay}><img src={imageUrl} alt='Selected'></img></div>}
             <label className={categoryIsValid ? classes.formLabel : classes.formLabelError}>Select it's category</label>
             <select onChange={(event) => {setCategoryInput(event.target.value)}} value={categoryInput} className={ categoryIsValid ? classes.formInput : classes.formInputError} placeholder='Select the category'>
-                <option>Gaming</option>
-                <option>FoodStuff</option>
-                <option>Luxury</option>
+                {categories.map((cat) => <option key={cat.id}>{cat.title}</option>)}
             </select>
             {!categoryIsValid && <p className={classes.errorMessage}>{categoryError}</p>}
             <label className={descriptionIsValid ? classes.formLabel : classes.formLabelError}>Description</label>
             <textarea type='text' onChange={(event) => {setDescriptionInput(event.target.value)}} value={descriptionInput} className={ descriptionIsValid ? classes.formInput : classes.formInputError} placeholder='Enter the description of your product'></textarea>
             {!descriptionIsValid && <p className={classes.errorMessage}>{descriptionError}</p>}
-            <Link to='/login' className={classes.linkText}>Is your preferred category not listed?</Link>
+            <Link to='/add-category' className={classes.linkText}>Is your preferred category not listed?</Link>
             <Button style={buttonStyle}>Add This Product</Button>
         </div>
     </div>
