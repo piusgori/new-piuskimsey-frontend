@@ -26,7 +26,7 @@ const Dropdown = () => {
                 {person && <h1 className={classes.title}>My Account</h1>}
                 <div className={classes.categoriesContainer}>
                     {person && <NavLink onClick={hideDropDownHandler} to='/cart' className={classes.text}><FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon> My Cart</NavLink>}
-                    {person && person.isAdmin && <p className={classes.text}><FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon> Add Item</p>}
+                    {person && person.isAdmin && <NavLink to='/add-product' onClick={hideDropDownHandler} className={classes.text}><FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon> Add Item</NavLink>}
                     {person && <NavLink onClick={hideDropDownHandler} to='/profile' className={classes.text}><FontAwesomeIcon icon={faUser}></FontAwesomeIcon> My Account</NavLink>}
                 </div>
                 <hr className={classes.hr}></hr>
@@ -35,7 +35,20 @@ const Dropdown = () => {
                 <hr className={classes.hr}></hr>
                 <h1 className={classes.title}>Our Categories</h1>
                 <div className={classes.categoriesContainer}>
-                    {categories.map((cat) => <NavLink key={cat.id} onClick={hideDropDownHandler} to='/category' className={classes.text}>{cat.title}</NavLink>)}
+                    {categories.map((cat) => {
+                        const setParamHandler = () => {
+                            let theParam;
+                            if (cat.title.includes(' ')){
+                                theParam = cat.title.toLowerCase().replace(' ', '-');
+                            } else {
+                                theParam = cat.title.toLowerCase();
+                            }
+                            return theParam;
+                        }
+                        return (
+                            <NavLink key={cat.id} onClick={hideDropDownHandler} to={`/category/${setParamHandler()}`} className={classes.text}>{cat.title}</NavLink>
+                        )
+                    })}
                 </div>
             </div>
         </div>

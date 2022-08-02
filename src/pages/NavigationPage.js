@@ -6,7 +6,7 @@ import Preloader from './Preloader'
 const NavigationPage = () => {
 
   const [isMainLoading, setIsMainLoading] = useState(true);
-  const { getJoke, getRegions, getCategories, getProducts, setPerson } = useContext(AppContext);
+  const { getJoke, getImages, getRegions, getCategories, getProducts, setPerson } = useContext(AppContext);
   
 
   useEffect(() => {
@@ -27,6 +27,7 @@ const NavigationPage = () => {
       await getJoke();
       await getRegions();
       await getCategories();
+      await getImages();
       await getProducts();
       setIsMainLoading(false);
     };

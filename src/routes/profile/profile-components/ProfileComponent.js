@@ -9,8 +9,38 @@ import { User } from '../../../models/user';
 
 const ProfileComponent = () => {
     const navigate = useNavigate();
-    const { person, isLoading, upgrade, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, setPerson } = useContext(AppContext);
+    const { person, getProductsByAdminId, isLoading, upgrade, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, setPerson } = useContext(AppContext);
     const [requestProceed, setRequestProceed] = useState(false);
+    const [personalProducts, setPersonalProducts] = useState([]);
+
+    useEffect(() => {
+        const myProductsHandler = async () => {
+            try {
+                const data = await getProductsByAdminId(person.id);
+                if(data.content){
+                    for (const i of data.content){
+                        if(i.type === 'Admin'){
+                            setModalTitle('Not existing');
+                            setModalText(i.message);
+                            setModalButtonText('Try Again Later');
+                            setModalRoute('/');
+                            setIsModalVisible(true);
+                        }
+                    }
+                    return;
+                }
+                setPersonalProducts(data.products);
+            } catch (err) {
+                setModalTitle('We are sorry');
+                setModalText('An unexpected error has occured. Sorry About That');
+                setModalButtonText('Okay');
+                setModalRoute('/');
+                setIsModalVisible(true); 
+            }
+        }
+        myProductsHandler();
+        // eslint-disable-next-line
+    }, [])
 
     const notProceedingHandler = () => {
         setRequestProceed(false);
@@ -101,13 +131,16 @@ const ProfileComponent = () => {
                     <Button onClick={notProceedingHandler} style={buttonStyle}>No</Button>
                 </div>
             </div>}
-            {isLoading && <ActivityIndicator></ActivityIndicator>}
+            {!person.isAdmin && isLoading && <ActivityIndicator></ActivityIndicator>}
         </div>
         {person.isAdmin && <div>
             <h1 className={classes.productsTitle}>My Products</h1>
-            {person.products.length === 0 && <p className={classes.emptyProductsText}>I have not yet Added Any Products</p>}
-            {person.products.length > 0 && <div className={classes.productsContainer}>
-                {person.products.map((prod) => <Card key={prod.id} product={prod}></Card>)}
+            {person.isAdmin && isLoading && <ActivityIndicator></ActivityIndicator>}
+            {person.isAdmin && !isLoading && <div>
+                {personalProducts.length === 0 && !isLoading && <p className={classes.emptyProductsText}>I have not yet Added Any Products</p>}
+                {personalProducts.length > 0 && !isLoading && <div className={classes.productsContainer}>
+                    {personalProducts.map((prod) => <Card key={prod.id} product={prod}></Card>)}
+                </div>}
             </div>}
         </div>}
     </div>

@@ -1,6 +1,6 @@
 .container {
-    min-height: fit-content;
-    padding: 10px;
+    height: fit-content;
+    padding: 24px 10px;
     background-color: white;
     box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.46);
     width: 22.5%;
@@ -18,8 +18,12 @@
 
 .imageContainer {
     width: 100%;
-    max-height: 52.5%;
+    max-height: 225px;
+    border-radius: 10px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .image {

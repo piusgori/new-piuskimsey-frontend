@@ -1,16 +1,19 @@
 import { createContext, useState } from "react";
+import { ref, listAll, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { storage } from "../private/firebase";
 
 export const AppContext = createContext({
     person: null,
     products: [],
+    images: [],
     admins: [],
     regions: [],
     categories: [],
     modalRoute: null,
-    logout: null,
     isLoading: false,
     setIsLoading: null,
     setPerson: null,
+    setProducts: null,
     setModalRoute: null,
     isDropdownVisible: false,
     isModalVisible: false,
@@ -24,6 +27,7 @@ export const AppContext = createContext({
     setModalText: null,
     setModalButtonText: null,
     joke: '',
+    logout: () => {},
     login: (email, password) => {},
     signup: (name, email, password, phoneNumber, region) => {},
     setNewPassword: (personId, password) => {},
@@ -31,6 +35,13 @@ export const AppContext = createContext({
     upgrade: (id) => {},
     requestCategory: (email, category) => {},
     requestRegion: (region) => {},
+    getImageUrl: (imageTitle) => {},
+    addProduct: (title, price, category, description ) => {},
+    uploadProductImage: (imageFile, imageName) => {},
+    updateProduct: (productId, image) => {},
+    getProductsByAdminId: (adminId) => {},
+    productsPagination: (currentPage) => {},
+    getImages: () => {},
     getAdmins: () => {},
     getCategories: () => {},
     getRegions: () => {},
@@ -53,6 +64,7 @@ export const AppContextProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [person, setPerson] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [images, setImages] = useState([]);
 
     const getJoke = async () => {
         try {
@@ -105,23 +117,7 @@ export const AppContextProvider = ({ children }) => {
         }
     }
 
-    const getProducts = async () => {
-        try {
-            const response = await fetch(`${url}/shop`);
-            const responseData = await response.json();
-            if(!response.ok && response.status === 500){
-                throw new Error('Unable to get products');
-            }
-            setProducts(responseData.products)
-        } catch (err) {
-            setModalTitle('Sorry');
-            setModalText('An Unexpected Error Has Occurred');
-            setModalButtonText('Okay');
-            setModalRoute('/')
-            setIsModalVisible(true);
-        }
-    }
-
+    
     const signup = async (name, email, password, phoneNumber, region) => {
         try {
             setIsLoading(true);
@@ -179,7 +175,7 @@ export const AppContextProvider = ({ children }) => {
         setModalRoute('/');
         setIsModalVisible(true);
     }
-
+    
     const setNewPassword = async (personId, password) => {
         try {
             setIsLoading(true);
@@ -244,7 +240,116 @@ export const AppContextProvider = ({ children }) => {
         }
     }
 
-    const value = { isLoading, setIsLoading, signup, upgrade, requestCategory, requestRegion, forgotPassword, setNewPassword, login, logout, modalRoute, setModalRoute, person, setPerson, products, regions, categories, joke, setJoke, modalButtonText, setModalButtonText, modalText, setModalText, modalTitle, setModalTitle, isModalVisible, isDropdownVisible, setIsDropdownVisible, setIsModalVisible, getJoke, getCategories, getRegions, getProducts };
+    const getImages = async () => {
+        const imagesRef = ref(storage, 'images/');
+        const response = await listAll(imagesRef);
+        setImages(response.items);
+    }
+    
+    const getImageUrl = async (imageTitle) => {
+        let imageUrl;
+        for (let i = 0; i < images.length; i++){
+            if(images[i]._location.path.split('images/')[1] === imageTitle){
+                imageUrl = await getDownloadURL(images[i]);
+            }
+        }
+        return imageUrl;
+    }
+    
+    const getProducts = async () => {
+        try {
+            const response = await fetch(`${url}/shop`);
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500){
+                throw new Error('Unable to get products');
+            }
+            setProducts(responseData.products)
+        } catch (err) {
+            setModalTitle('Sorry');
+            setModalText('An Unexpected Error Has Occurred');
+            setModalButtonText('Okay');
+            setModalRoute('/')
+            setIsModalVisible(true);
+        }
+    }
+
+    const getProductsByAdminId = async (adminId) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`${url}/shop/admin/${adminId}`);
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to get products for this admin');
+            }
+            return responseData;
+        } catch (err) {
+            setModalTitle('Sorry');
+            setModalText('An Unexpected Error Has Occurred');
+            setModalButtonText('Okay');
+            setModalRoute(null);
+            setIsModalVisible(true);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const productsPagination = async (currentPage) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`${url}/shop/page?page=${currentPage}`);
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to get products for this page');
+            }
+            return responseData;
+        } catch (err) {
+            setModalTitle('Sorry');
+            setModalText('An Unexpected Error Has Occurred');
+            setModalButtonText('Okay');
+            setModalRoute('/');
+            setIsModalVisible(true);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const addProduct = async (title, price, category, description ) => {
+        try {
+            const response = await fetch(`${url}/shop/product`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${person.token}` }, body: JSON.stringify({ title, price, category, description, adminId: person.id }) });
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to create new product');
+            }
+            return responseData;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const uploadProductImage = async (imageFile, imageName) => {
+        const imageUploadRef = ref(storage, `images/${imageName}`);
+        try {
+            await uploadBytes(imageUploadRef, imageFile);
+        } catch (err) {
+            console.log(err);
+        }
+        return imageName;
+    }
+
+    const updateProduct = async (productId, image) => {
+        try {
+            const response = await fetch(`${url}/shop/image/product/${productId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image, adminId: person.id }) });
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to create new product');
+            }
+            return responseData;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const value = { isLoading, images, setIsLoading, productsPagination, getProductsByAdminId, getImages, getImageUrl, addProduct, uploadProductImage, updateProduct, signup, upgrade, requestCategory, requestRegion, forgotPassword, setNewPassword, login, logout, modalRoute, setModalRoute, person, setPerson, products, setProducts, regions, categories, joke, setJoke, modalButtonText, setModalButtonText, modalText, setModalText, modalTitle, setModalTitle, isModalVisible, isDropdownVisible, setIsDropdownVisible, setIsModalVisible, getJoke, getCategories, getRegions, getProducts };
 
     return (
         <AppContext.Provider value={value}>{children}</AppContext.Provider>

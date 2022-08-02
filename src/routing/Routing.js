@@ -19,6 +19,7 @@ import AddCategoryPage from '../routes/store/AddCategoryPage';
 import AddRegionPage from '../routes/signup/AddRegionPage';
 import CartPage from '../routes/cart/CartPage';
 import OrderPage from '../routes/order/OrderPage';
+import NotFoundPage from '../routes/home/NotFoundPage';
 
 const Routing = () => {
 
@@ -53,10 +54,11 @@ const Routing = () => {
         <Route path='/add-product' element={<AddProductPage></AddProductPage>}></Route>
         <Route path='/add-region' element={<AddRegionPage></AddRegionPage>}></Route>
         <Route path='/add-category' element={<AddCategoryPage></AddCategoryPage>}></Route>
-        <Route path='/category' element={<CategoryPage></CategoryPage>}></Route>
+        <Route path='/category/:cat' element={<CategoryPage></CategoryPage>}></Route>
         <Route path='/profile' element={<ProfilePage></ProfilePage>}></Route>
         <Route path='/cart' element={<CartPage></CartPage>}></Route>
         <Route path='/order' element={<OrderPage></OrderPage>}></Route>
+        <Route path='*' element={<NotFoundPage></NotFoundPage>}></Route>
       </Routes>
     </Fragment>
   )

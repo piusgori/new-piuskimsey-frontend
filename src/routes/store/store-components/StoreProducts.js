@@ -1,46 +1,78 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ActivityIndicator from '../../../components/ui/ActivityIndicator';
+import Button from '../../../components/ui/Button';
 import Card from '../../../components/ui/Card';
-import { products } from '../../../utils/products';
+import { AppContext } from '../../../services/app-context';
 import classes from './StoreProducts.module.css';
 
 const StoreProducts = () => {
+    const buttonStyle = { marginBottom: 15};
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageProducts, setPageProducts] = useState([]);
+    const [perPage, setPerPage] = useState(1);
+    const [total, setTotal] = useState(0);
+    const [isLastPage, setIsLastPage] = useState(false);
+    const [isFirstPage, setIsFirstPage] = useState(true);
+    const [isOnePage, setIsOnePage] = useState(false);
+    const { isLoading, productsPagination, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext);
 
-    const [pageNumber, setPageNumber]  = useState(1);
-    const itemsPerPage = 8;
-    const maxPages = Math.ceil(products.length / itemsPerPage);
-    const [productsPerPage, setproductsPerPage] = useState([]);
+    const getProductsForCurrentPage = async (page) => {
+        try {
+            const data = await productsPagination(page);
+            setPageProducts(data.products);
+            setTotal(data.totalItems);
+            setPerPage(data.perPage);
+            pageNumber === 1 ? setIsFirstPage(true) : setIsFirstPage(false);
+            (pageNumber * data.perPage) >= data.totalItems ? setIsLastPage(true) : setIsLastPage(false);
+            data.totalItems <= data.perPage ? setIsOnePage(true) : setIsOnePage(false);
+        } catch (err) {
+            setModalTitle('We Are Sorry');
+            setModalText('An Unexpected Error has Occured. Sorry about that');
+            setModalButtonText('Okay');
+            setModalRoute('/');
+            setIsModalVisible(true);
+        }
+    }
+
+    const seeMoreProductsHandler = async (method) => {
+        if(method === 'increase' && !isLastPage && !isOnePage){
+            const nextPage = pageNumber + 1;
+            setPageNumber(prevPage => prevPage + 1);
+            await getProductsForCurrentPage(nextPage);
+        } else if(method === 'decrease' && !isFirstPage && !isOnePage) {
+            const previousPage = pageNumber - 1;
+            setPageNumber(prevPage => prevPage - 1);
+            await getProductsForCurrentPage(previousPage);
+        }
+    }
+
+    const nextPageHandler = async () => {
+        await seeMoreProductsHandler('increase');
+    }
+    const previousPageHandler = async () => {
+        await seeMoreProductsHandler('decrease');
+    }
 
     useEffect(() => {
-        const productsToAdd = [];
-        if (pageNumber < maxPages){
-            for (let a = ((pageNumber * itemsPerPage) - itemsPerPage); a < (pageNumber * itemsPerPage); a++ ){
-                productsToAdd.push(products[a]);
-            }
-        } else if (pageNumber === maxPages){
-            for (let a = ((pageNumber * itemsPerPage) - itemsPerPage); a < products.length; a++ ){
-                productsToAdd.push(products[a]);
-            }
-        } else if (products.legth <= 8) {
-            for (let a = 0; a < 8; a++ ){
-                productsToAdd.push(products[a]);
-            }
-        }
-        setproductsPerPage(productsToAdd);
-    }, [pageNumber, maxPages])
+        const gettingPages = async () => {
+            await getProductsForCurrentPage(pageNumber)
+        };
+        gettingPages();
+        // eslint-disable-next-line
+    }, [])
 
   return (
     <div className={classes.container}>
         <h1 className={classes.title}>All Products</h1>
-        {/* <ActivityIndicator></ActivityIndicator> */}
-        <div className={classes.productsContainer}>
-            {productsPerPage.map((product) => <Card key={product.id} product={product}></Card>)}
-        </div>
-        <div className={classes.pagesContainer}>
-            <div className={classes.pageItem}>1</div>
-            <div className={classes.pageItem}>2</div>
-            <div className={classes.pageItemActive}>3</div>
-        </div>
+        {isLoading && <ActivityIndicator></ActivityIndicator>}
+        {!isLoading && <div className={classes.productsContainer}>
+            {pageProducts.length === 0 && <p className={classes.emptyText}>No products have been added yet</p>}
+            {pageProducts.length > 0 && pageProducts.map((product) => <Card key={product.id} product={product}></Card>)}
+        </div>}
+        {!isOnePage && !isLoading && <div className={classes.pagesContainer}>
+            {total > perPage * pageNumber && <Button onClick={nextPageHandler} style={buttonStyle}>Next</Button>}
+            {(pageNumber - 1) * perPage !== 0 && <Button onClick={previousPageHandler} style={buttonStyle}>Previous</Button>}
+        </div>}
     </div>
   )
 }
