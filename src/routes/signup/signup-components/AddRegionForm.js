@@ -11,7 +11,7 @@ const AddRegionForm = () => {
     const [titleError, setTitleError] = useState('');
 
     const buttonStyle = { width: '55%', alignSelf: 'center', marginTop: 10 };
-    const { isLoading, requestRegion, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext);
+    const { isLoading, setModalAnimation, requestRegion, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext);
 
     const checkTitleIsValid = () => {
       if(titleInput.length < 3){
@@ -40,12 +40,14 @@ const AddRegionForm = () => {
           return;
         }
         setModalTitle('Request Sent');
+        setModalAnimation(1);
         setModalText('Your request has been sent and will be acted upon A$AP');
         setModalButtonText('Okay');
         setModalRoute('/');
         setIsModalVisible(true);
       } catch (err) {
         setModalTitle('We Are Sorry');
+        setModalAnimation(3);
         setModalText('An Unexpected Error has Occured. Sorry about that');
         setModalButtonText('Okay');
         setModalRoute(null);

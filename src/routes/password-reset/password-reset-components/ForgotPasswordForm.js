@@ -13,7 +13,7 @@ const ForgotPasswordForm = () => {
 
     const buttonStyle = { width: '55%', alignSelf: 'center', marginTop: 10 };
     const navigate = useNavigate();
-    const { isLoading, person, forgotPassword, setModalTitle, setIsModalVisible, setModalButtonText, setModalRoute, setModalText } = useContext(AppContext); 
+    const { isLoading, setModalAnimation, person, forgotPassword, setModalTitle, setIsModalVisible, setModalButtonText, setModalRoute, setModalText } = useContext(AppContext); 
 
     const checkEmailIsValid = () => {
       //eslint-disable-next-line
@@ -45,12 +45,14 @@ const ForgotPasswordForm = () => {
           return;
         }
         setModalTitle('Reset Link Sent');
+        setModalAnimation(1);
         setModalText('We have sent you the pasword reset link. Please check your E-Mail for the link.');
         setModalButtonText('Okay');
         setModalRoute(null);
         setIsModalVisible(true);
       } catch (err) {
         setModalTitle('We Are Sorry');
+        setModalAnimation(3);
         setModalText('An Unexpected Error has Occured. Sorry about that');
         setModalButtonText('Okay');
         setModalRoute(null);

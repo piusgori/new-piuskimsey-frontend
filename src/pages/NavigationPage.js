@@ -31,7 +31,6 @@ const NavigationPage = () => {
       await getProducts();
       setIsMainLoading(false);
     };
-
     fetchingItemsHandler();
     //eslint-disable-next-line
   }, [])

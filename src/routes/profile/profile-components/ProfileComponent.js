@@ -9,7 +9,7 @@ import { User } from '../../../models/user';
 
 const ProfileComponent = () => {
     const navigate = useNavigate();
-    const { person, getProductsByAdminId, isLoading, upgrade, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, setPerson } = useContext(AppContext);
+    const { person, setModalAnimation, getProductsByAdminId, isLoading, upgrade, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, setPerson } = useContext(AppContext);
     const [requestProceed, setRequestProceed] = useState(false);
     const [personalProducts, setPersonalProducts] = useState([]);
 
@@ -32,6 +32,7 @@ const ProfileComponent = () => {
                 setPersonalProducts(data.products);
             } catch (err) {
                 setModalTitle('We are sorry');
+                setModalAnimation(3);
                 setModalText('An unexpected error has occured. Sorry About That');
                 setModalButtonText('Okay');
                 setModalRoute('/');
@@ -75,11 +76,13 @@ const ProfileComponent = () => {
             localStorage.setItem('person', JSON.stringify(upgradedUser));
             setModalTitle('Success!');
             setModalText('You have upgraded successfully');
+            setModalAnimation(1);
             setModalButtonText('Okay');
             setModalRoute('/');
             setIsModalVisible(true);
         } catch (err) {
             setModalTitle('We are sorry');
+            setModalAnimation(3);
             setModalText('An unexpected error has occured. Sorry About That');
             setModalButtonText('Okay');
             setModalRoute(null);

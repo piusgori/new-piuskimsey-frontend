@@ -13,7 +13,7 @@ const PasswordResetForm = () => {
     const [passwordError, setPasswordError] = useState('');
     const { token } = useParams();
     const { decodedToken, isExpired } = useJwt(token);
-    const { isLoading, setNewPassword, setIsModalVisible, setModalButtonText, setModalRoute, setModalTitle, setModalText } = useContext(AppContext);
+    const { isLoading, setModalAnimation, setNewPassword, setIsModalVisible, setModalButtonText, setModalRoute, setModalTitle, setModalText } = useContext(AppContext);
 
     const buttonStyle = { width: '55%', alignSelf: 'center', marginTop: 10 }
 
@@ -40,6 +40,7 @@ const PasswordResetForm = () => {
           for (const i of data.content){
             if(i.type === 'user'){
               setModalTitle('Person not found');
+              setModalAnimation(2);
               setModalText('We have not found the user or admin whose email you gave us!');
               setModalButtonText('Okay');
               setModalRoute(null);
@@ -53,12 +54,14 @@ const PasswordResetForm = () => {
         }
         setModalTitle('Password Reset');
         setModalText('Your Password has been reset successfully');
+        setModalAnimation(1);
         setModalButtonText('Okay');
         setModalRoute('/login');
         setIsModalVisible(true);
       } catch (err) {
         setModalTitle('We Are Sorry');
         setModalText('An Unexpected Error has Occured. Sorry about that');
+        setModalAnimation(3);
         setModalButtonText('Okay');
         setModalRoute(null);
         setIsModalVisible(true);

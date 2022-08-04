@@ -11,7 +11,7 @@ const AddCategoryForm = () => {
     const [titleIsValid, setTitleIsValid] = useState(true);
     const [titleError, setTitleError] = useState('');
     const navigate = useNavigate();
-    const { person, isLoading, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, requestCategory } = useContext(AppContext);
+    const { person, setModalAnimation, isLoading, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, requestCategory } = useContext(AppContext);
 
     const buttonStyle = { width: '55%', alignSelf: 'center', marginTop: 10 };
 
@@ -42,6 +42,7 @@ const AddCategoryForm = () => {
           return;
         }
         setModalTitle('Request Sent');
+        setModalAnimation(1);
         setModalText('Your request has been sent and will be acted upon A$AP');
         setModalButtonText('Okay');
         setModalRoute('/');
@@ -50,6 +51,7 @@ const AddCategoryForm = () => {
         setModalTitle('We Are Sorry');
         setModalText('An Unexpected Error has Occured. Sorry about that');
         setModalButtonText('Okay');
+        setModalAnimation(3);
         setModalRoute(null);
         setIsModalVisible(true);
       }

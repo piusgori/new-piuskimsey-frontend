@@ -1,6 +1,8 @@
 import { createContext, useState } from "react";
-import { ref, listAll, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { ref, listAll, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage';
 import { storage } from "../private/firebase";
+import { CartItem } from "../models/cart";
+import { User } from "../models/user";
 
 export const AppContext = createContext({
     person: null,
@@ -23,6 +25,8 @@ export const AppContext = createContext({
     modalText: '',
     modalButtonText: '',
     modalButtonAction: '',
+    modalAnimation: 0,
+    setModalAnimation: null,
     setModalTitle: null,
     setModalText: null,
     setModalButtonText: null,
@@ -41,6 +45,10 @@ export const AppContext = createContext({
     updateProduct: (productId, image) => {},
     getProductsByAdminId: (adminId) => {},
     productsPagination: (currentPage) => {},
+    addToCart: (product, method) => {},
+    getProductById: (productId) => {},
+    editProduct: (productId, title, isDiscount, isFinished, newPrice, description) => {},
+    deleteProduct: (productId) => {},
     getImages: () => {},
     getAdmins: () => {},
     getCategories: () => {},
@@ -56,6 +64,7 @@ export const AppContextProvider = ({ children }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [modalTitle, setModalTitle] = useState('Modal Title');
     const [modalText, setModalText] = useState('Modal Text');
+    const [modalAnimation, setModalAnimation] = useState(0);
     const [modalButtonText, setModalButtonText] = useState('Okay');
     const [modalRoute, setModalRoute] = useState(null);
     const [joke, setJoke] = useState('Why don\'t jokes work in octal? Because 7, 10, 11');
@@ -77,6 +86,7 @@ export const AppContextProvider = ({ children }) => {
         } catch (err) {
             setModalTitle('Sorry');
             setModalText('An Unexpected Error Has Occurred');
+            setModalAnimation(3);
             setModalButtonText('Okay');
             setModalRoute('/');
             setIsModalVisible(true);
@@ -94,6 +104,7 @@ export const AppContextProvider = ({ children }) => {
         } catch (err) {
             setModalTitle('Sorry');
             setModalText('An Unexpected Error Has Occurred');
+            setModalAnimation(3);
             setModalButtonText('Okay');
             setModalRoute('/');
             setIsModalVisible(true);
@@ -111,6 +122,7 @@ export const AppContextProvider = ({ children }) => {
         } catch (err) {
             setModalTitle('Sorry');
             setModalText('An Unexpected Error Has Occurred');
+            setModalAnimation(3);
             setModalButtonText('Okay');
             setModalRoute('/');
             setIsModalVisible(true);
@@ -171,6 +183,7 @@ export const AppContextProvider = ({ children }) => {
         localStorage.removeItem('person');
         setModalTitle('Success');
         setModalText('You have logged out Successfully');
+        setModalAnimation(1);
         setModalButtonText('Okay');
         setModalRoute('/');
         setIsModalVisible(true);
@@ -267,6 +280,7 @@ export const AppContextProvider = ({ children }) => {
         } catch (err) {
             setModalTitle('Sorry');
             setModalText('An Unexpected Error Has Occurred');
+            setModalAnimation(3);
             setModalButtonText('Okay');
             setModalRoute('/')
             setIsModalVisible(true);
@@ -285,11 +299,62 @@ export const AppContextProvider = ({ children }) => {
         } catch (err) {
             setModalTitle('Sorry');
             setModalText('An Unexpected Error Has Occurred');
+            setModalAnimation(3);
             setModalButtonText('Okay');
             setModalRoute(null);
             setIsModalVisible(true);
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    const updateCart = (product, method) => {
+        let cartToUpdate = person.cart;
+        const itemInCart = cartToUpdate.find((prod) => prod.id === product.id);
+        if(itemInCart) {
+            for (const a of cartToUpdate){
+                if(a.id === product.id){
+                    if(method === 'increase') {
+                        a.quantity++;
+                        a.totalAmount = a.price * a.quantity;
+                    } else if (method === 'decrease') {
+                        if (a.quantity > 1) {
+                            a.quantity--;
+                            a.totalAmount = a.price * a.quantity;
+                        } else if (a.quantity === 1) {
+                            cartToUpdate.filter((each) => each.id !== product.id);
+                        }
+                    } else if (method === 'delete') {
+                        cartToUpdate.filter((each) => each.id !== product.id);
+                    }
+                }
+            }
+        } else if (!itemInCart) {
+            const productPrice = product.isDiscount ? product.newPrice : product.price;
+            const newCartItem = new CartItem(product.id, product.title, productPrice, 1, productPrice, product.creator, product.creatorDetails);
+            cartToUpdate.push(newCartItem);
+        }
+        return cartToUpdate;
+    }
+
+    const addToCart = async (product, method) => {
+        const updatedCart = updateCart(product, method);
+        try {
+            const updatedPerson = new User(person.id, person.name, person.email, person.phoneNumber, person.region, person.products, updatedCart, person.orders, person.token, person.isAdmin, person.sessionExpiry);
+            setPerson(updatedPerson);
+            localStorage.setItem('person', JSON.stringify(updatedPerson));
+            const response = await fetch(`${url}/shop/cart/${person.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cart: updatedCart }) });
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to update person cart');
+            }
+        } catch (err) {
+            setModalTitle('Sorry');
+            setModalText('We were unable to update your cart');
+            setModalAnimation(3);
+            setModalButtonText('Okay');
+            setModalRoute(null);
+            setIsModalVisible(true);
         }
     }
 
@@ -305,11 +370,25 @@ export const AppContextProvider = ({ children }) => {
         } catch (err) {
             setModalTitle('Sorry');
             setModalText('An Unexpected Error Has Occurred');
+            setModalAnimation(3);
             setModalButtonText('Okay');
             setModalRoute('/');
             setIsModalVisible(true);
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    const getProductById = async (productId) => {
+        try {
+            const response = await fetch(`${url}/shop/product/${productId}`);
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to get products with specified id');
+            }
+            return responseData;
+        } catch (err) {
+            console.log(err);
         }
     }
 
@@ -319,6 +398,39 @@ export const AppContextProvider = ({ children }) => {
             const responseData = await response.json();
             if(!response.ok && response.status === 500 && !responseData.content){
                 throw new Error('Unable to create new product');
+            }
+            return responseData;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const editProduct = async (productId, title, isDiscount, isFinished, newPrice, description) => {
+        try {
+            const selectedDiscount = isDiscount === 'Yes' ? true : false;
+            const selectedFinished = isFinished === 'Yes' ? true : false;
+            const enteredNewPrice = isDiscount === 'Yes' ? newPrice : 0;
+            const response = await fetch(`${url}/shop/product/${productId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${person.token}` }, body: JSON.stringify({ title, isDiscount: selectedDiscount, isFinished: selectedFinished, newPrice: enteredNewPrice, description, adminId: person.id }) });
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to create new product');
+            }
+            return responseData;
+        } catch (err) {
+             console.log(err);   
+        }
+    }
+
+    const deleteProduct = async (productId) => {
+        try {
+            const response = await fetch(`${url}/shop/product/${productId}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${person.token}` } });
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to create new product');
+            }
+            if(response.ok){
+                const toDeleteRef = ref(storage, `images/${responseData.image}`);
+                await deleteObject(toDeleteRef);
             }
             return responseData;
         } catch (err) {
@@ -349,7 +461,7 @@ export const AppContextProvider = ({ children }) => {
         }
     }
 
-    const value = { isLoading, images, setIsLoading, productsPagination, getProductsByAdminId, getImages, getImageUrl, addProduct, uploadProductImage, updateProduct, signup, upgrade, requestCategory, requestRegion, forgotPassword, setNewPassword, login, logout, modalRoute, setModalRoute, person, setPerson, products, setProducts, regions, categories, joke, setJoke, modalButtonText, setModalButtonText, modalText, setModalText, modalTitle, setModalTitle, isModalVisible, isDropdownVisible, setIsDropdownVisible, setIsModalVisible, getJoke, getCategories, getRegions, getProducts };
+    const value = { isLoading, images, editProduct, deleteProduct, modalAnimation, getProductById, setModalAnimation, setIsLoading, productsPagination, getProductsByAdminId, addToCart, getImages, getImageUrl, addProduct, uploadProductImage, updateProduct, signup, upgrade, requestCategory, requestRegion, forgotPassword, setNewPassword, login, logout, modalRoute, setModalRoute, person, setPerson, products, setProducts, regions, categories, joke, setJoke, modalButtonText, setModalButtonText, modalText, setModalText, modalTitle, setModalTitle, isModalVisible, isDropdownVisible, setIsDropdownVisible, setIsModalVisible, getJoke, getCategories, getRegions, getProducts };
 
     return (
         <AppContext.Provider value={value}>{children}</AppContext.Provider>

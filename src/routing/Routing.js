@@ -20,6 +20,8 @@ import AddRegionPage from '../routes/signup/AddRegionPage';
 import CartPage from '../routes/cart/CartPage';
 import OrderPage from '../routes/order/OrderPage';
 import NotFoundPage from '../routes/home/NotFoundPage';
+import ProductPage from '../routes/product/ProductPage';
+import EditProductPage from '../routes/product/EditProductPage';
 
 const Routing = () => {
 
@@ -55,6 +57,8 @@ const Routing = () => {
         <Route path='/add-region' element={<AddRegionPage></AddRegionPage>}></Route>
         <Route path='/add-category' element={<AddCategoryPage></AddCategoryPage>}></Route>
         <Route path='/category/:cat' element={<CategoryPage></CategoryPage>}></Route>
+        <Route path='/product/:productId' element={<ProductPage></ProductPage>}></Route>
+        <Route path='/edit-product/:productId' element={<EditProductPage></EditProductPage>}></Route>
         <Route path='/profile' element={<ProfilePage></ProfilePage>}></Route>
         <Route path='/cart' element={<CartPage></CartPage>}></Route>
         <Route path='/order' element={<OrderPage></OrderPage>}></Route>

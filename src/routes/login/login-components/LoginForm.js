@@ -16,7 +16,7 @@ const LoginForm = () => {
     const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
 
-    const { isLoading, login, person, setPerson, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext)
+    const { isLoading, setModalAnimation, login, person, setPerson, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext)
     const buttonStyle = { width: '55%', alignSelf: 'center', marginTop: 10 }
 
     const checkEmailIsValid = () => {
@@ -68,12 +68,14 @@ const LoginForm = () => {
         localStorage.setItem('person', JSON.stringify(loggedUser));
         setModalTitle('Welcome Again');
         setModalText('We welcome you back to PiusKimsey');
+        setModalAnimation(0);
         setModalButtonText('Proceed');
         setModalRoute('/');
         setIsModalVisible(true);
       } catch (err) {
         setModalTitle('We Are Sorry');
         setModalText('An Unexpected Error has Occured. Sorry about that');
+        setModalAnimation(3);
         setModalButtonText('Okay');
         setModalRoute(null);
         setIsModalVisible(true);

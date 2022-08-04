@@ -28,7 +28,7 @@ const AddProductForm = () => {
     const [descriptionError, setDescriptionError] = useState('');
     const [formIsValid, setFormIsValid] = useState(false);
 
-    const { categories, person, isLoading, setIsLoading, setProducts, addProduct, uploadProductImage, updateProduct, setIsModalVisible, setModalButtonText, setModalRoute, setModalText, setModalTitle } = useContext(AppContext);
+    const { categories, setModalAnimation, person, isLoading, setIsLoading, setProducts, addProduct, uploadProductImage, updateProduct, setIsModalVisible, setModalButtonText, setModalRoute, setModalText, setModalTitle } = useContext(AppContext);
     const navigate = useNavigate();
 
     const imageInputRef = useRef();
@@ -149,11 +149,13 @@ const AddProductForm = () => {
                         } else if (i.type === 'admin'){
                             setModalTitle('Not Found');
                             setModalText('We have not found you as an admin');
+                            setModalAnimation(2);
                             setModalButtonText('Okay');
                             setModalRoute(null);
                             setIsModalVisible(true);
                         } else if (i.type === 'product'){
                             setModalTitle('Products Exists');
+                            setModalAnimation(3);
                             setModalText('The Product you are trying to add already exists under your products');
                             setModalButtonText('Okay');
                             setModalRoute(null);
@@ -172,12 +174,14 @@ const AddProductForm = () => {
                         } else if (i.type === 'admin'){
                             setModalTitle('Not Found');
                             setModalText('We have not found you as an admin');
+                            setModalAnimation(2);
                             setModalButtonText('Okay');
                             setModalRoute(null);
                             setIsModalVisible(true);
                         } else if (i.type === 'product'){
                             setModalTitle('Not Found');
                             setModalText(i.message);
+                            setModalAnimation(2);
                             setModalButtonText('Okay');
                             setModalRoute(null);
                             setIsModalVisible(true);
@@ -189,6 +193,7 @@ const AddProductForm = () => {
                 setProducts(prevProducts => [createdProduct, ...prevProducts]);
                 setModalTitle('Success');
                 setModalText('You have successfully added a product');
+                setModalAnimation(1);
                 setModalButtonText('Okay');
                 setModalRoute('/');
                 setIsModalVisible(true);
@@ -196,6 +201,7 @@ const AddProductForm = () => {
                 setModalTitle('We Are Sorry');
                 setModalText('An Unexpected Error Has Occurred!');
                 setModalButtonText('Okay');
+                setModalAnimation(3);
                 setModalRoute(null);
                 setIsModalVisible(true);
             } finally {

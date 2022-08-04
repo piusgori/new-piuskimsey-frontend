@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../services/app-context';
 import Button from './Button';
 import classes from './Card.module.css';
@@ -9,6 +10,11 @@ const Card = ({ product }) => {
     const [isImageLoading, setIsImageLoading] = useState(true);
     const [url, setUrl] = useState('');
     const { getImageUrl } = useContext(AppContext);
+    const navigate = useNavigate();
+
+    const navigateToProductDetailsHandler = () => {
+        navigate(`/product/${product.id}`);
+    }
     
     useEffect(() => {
         const gettingImageHandler = async () => {
@@ -35,7 +41,7 @@ const Card = ({ product }) => {
                 {product.isDiscount && <p className={classes.oldPrice}>Ksh {product.price}</p>}
             </div>
             <div className={classes.buttonContainer}>
-                <Button style={buttonStyle}>Details</Button>
+                <Button onClick={navigateToProductDetailsHandler} style={buttonStyle}>Details</Button>
                 <Button style={buttonStyle}>Cart</Button>
             </div>
         </div>

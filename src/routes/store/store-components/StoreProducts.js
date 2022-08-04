@@ -11,10 +11,8 @@ const StoreProducts = () => {
     const [pageProducts, setPageProducts] = useState([]);
     const [perPage, setPerPage] = useState(1);
     const [total, setTotal] = useState(0);
-    const [isLastPage, setIsLastPage] = useState(false);
-    const [isFirstPage, setIsFirstPage] = useState(true);
     const [isOnePage, setIsOnePage] = useState(false);
-    const { isLoading, productsPagination, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext);
+    const { isLoading, setModalAnimation, productsPagination, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext);
 
     const getProductsForCurrentPage = async (page) => {
         try {
@@ -22,24 +20,23 @@ const StoreProducts = () => {
             setPageProducts(data.products);
             setTotal(data.totalItems);
             setPerPage(data.perPage);
-            pageNumber === 1 ? setIsFirstPage(true) : setIsFirstPage(false);
-            (pageNumber * data.perPage) >= data.totalItems ? setIsLastPage(true) : setIsLastPage(false);
             data.totalItems <= data.perPage ? setIsOnePage(true) : setIsOnePage(false);
         } catch (err) {
             setModalTitle('We Are Sorry');
             setModalText('An Unexpected Error has Occured. Sorry about that');
             setModalButtonText('Okay');
+            setModalAnimation(3);
             setModalRoute('/');
             setIsModalVisible(true);
         }
     }
 
     const seeMoreProductsHandler = async (method) => {
-        if(method === 'increase' && !isLastPage && !isOnePage){
+        if(method === 'increase' && total > perPage * pageNumber && !isOnePage){
             const nextPage = pageNumber + 1;
             setPageNumber(prevPage => prevPage + 1);
             await getProductsForCurrentPage(nextPage);
-        } else if(method === 'decrease' && !isFirstPage && !isOnePage) {
+        } else if(method === 'decrease' && (pageNumber - 1) * perPage !== 0 && !isOnePage) {
             const previousPage = pageNumber - 1;
             setPageNumber(prevPage => prevPage - 1);
             await getProductsForCurrentPage(previousPage);
