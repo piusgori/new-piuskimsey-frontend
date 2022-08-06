@@ -13,6 +13,35 @@
     text-transform: capitalize;
 }
 
+.anchoredButton {
+    padding: .5rem 1rem;
+    background-color: #005e00;
+    border: 1px solid #005e00;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.06);
+    transition: .5s;
+    height: fit-content;
+    width: fit-content;
+    margin: 10px 0;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+.anchoredButton:hover {
+    color: #005e00;
+    background-color: white;
+    cursor: pointer;
+}
+
+.anchoredButton:hover a {
+    color: #005e00;
+}
+
+
 .text {
     text-align: center;
     color: #646464;

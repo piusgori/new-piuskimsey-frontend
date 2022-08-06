@@ -1,0 +1,24 @@
+.container {
+    padding: 24px;
+    margin-top: 65px;
+}
+
+.title {
+    font-weight: bold;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 2rem;
+    margin: 16px 0;
+}
+
+.emptyText {
+    text-align: center;
+    margin: 12px 0;
+}
+
+.productsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: stretch;
+}

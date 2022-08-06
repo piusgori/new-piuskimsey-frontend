@@ -6,7 +6,7 @@ import Preloader from './Preloader'
 const NavigationPage = () => {
 
   const [isMainLoading, setIsMainLoading] = useState(true);
-  const { getJoke, getImages, getRegions, getCategories, getProducts, setPerson } = useContext(AppContext);
+  const { getJoke, getImages, setPersonCart, getRegions, getCategories, getProducts, setPerson } = useContext(AppContext);
   
 
   useEffect(() => {
@@ -20,6 +20,7 @@ const NavigationPage = () => {
           localStorage.removeItem('person');
         } else if (timeNow < parsedPerson.sessionExpiry){
           setPerson(parsedPerson);
+          setPersonCart(parsedPerson.cart);
         }
       } else if (!foundPerson){
         setPerson(null);

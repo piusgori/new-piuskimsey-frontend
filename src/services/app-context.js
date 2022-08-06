@@ -6,6 +6,7 @@ import { User } from "../models/user";
 
 export const AppContext = createContext({
     person: null,
+    personCart: null,
     products: [],
     images: [],
     admins: [],
@@ -15,6 +16,7 @@ export const AppContext = createContext({
     isLoading: false,
     setIsLoading: null,
     setPerson: null,
+    setPersonCart: null,
     setProducts: null,
     setModalRoute: null,
     isDropdownVisible: false,
@@ -49,6 +51,9 @@ export const AppContext = createContext({
     getProductById: (productId) => {},
     editProduct: (productId, title, isDiscount, isFinished, newPrice, description) => {},
     deleteProduct: (productId) => {},
+    sendEmail: (email) => {},
+    search: (text) => {},
+    createOrder: () => {},
     getImages: () => {},
     getAdmins: () => {},
     getCategories: () => {},
@@ -72,6 +77,7 @@ export const AppContextProvider = ({ children }) => {
     const [regions, setRegions] = useState([]);
     const [products, setProducts] = useState([]);
     const [person, setPerson] = useState();
+    const [personCart, setPersonCart] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [images, setImages] = useState([]);
 
@@ -309,41 +315,48 @@ export const AppContextProvider = ({ children }) => {
     }
 
     const updateCart = (product, method) => {
-        let cartToUpdate = person.cart;
-        const itemInCart = cartToUpdate.find((prod) => prod.id === product.id);
-        if(itemInCart) {
-            for (const a of cartToUpdate){
+        const itemInCart = personCart.find((prod) => prod.id === product.id);
+        let theCart;
+        theCart = personCart;
+        if(itemInCart){
+            for (const a of theCart){
                 if(a.id === product.id){
                     if(method === 'increase') {
                         a.quantity++;
                         a.totalAmount = a.price * a.quantity;
+                        setPersonCart(theCart);
                     } else if (method === 'decrease') {
                         if (a.quantity > 1) {
                             a.quantity--;
                             a.totalAmount = a.price * a.quantity;
+                            setPersonCart(theCart);
                         } else if (a.quantity === 1) {
-                            cartToUpdate.filter((each) => each.id !== product.id);
+                            theCart.filter((each) => each.id !== product.id);
+                            setPersonCart(prevCart => prevCart.filter((each) => each.id !== product.id));
                         }
                     } else if (method === 'delete') {
-                        cartToUpdate.filter((each) => each.id !== product.id);
+                        theCart.filter((each) => each.id !== product.id);
+                        setPersonCart(prevCart => prevCart.filter((each) => each.id !== product.id));
                     }
                 }
             }
         } else if (!itemInCart) {
-            const productPrice = product.isDiscount ? product.newPrice : product.price;
+            const productPrice = product.isDiscount ? product.newPrice : product.price; 
             const newCartItem = new CartItem(product.id, product.title, productPrice, 1, productPrice, product.creator, product.creatorDetails);
-            cartToUpdate.push(newCartItem);
+            setPersonCart(prevCart => [...prevCart, newCartItem]);
+            theCart.push(newCartItem);
         }
-        return cartToUpdate;
+        return theCart;
     }
 
     const addToCart = async (product, method) => {
-        const updatedCart = updateCart(product, method);
+        const newCart = updateCart(product, method);
+        const cartToSend = personCart.length > 0 ? personCart : [];
         try {
-            const updatedPerson = new User(person.id, person.name, person.email, person.phoneNumber, person.region, person.products, updatedCart, person.orders, person.token, person.isAdmin, person.sessionExpiry);
-            setPerson(updatedPerson);
+            const updatedPerson = new User(person.id, person.name, person.email, person.phoneNumber, person.region, person.products, cartToSend, person.orders, person.token, person.isAdmin, person.sessionExpiry);
+            setPerson(prevPerson => ({ ...prevPerson, cart: cartToSend }));
             localStorage.setItem('person', JSON.stringify(updatedPerson));
-            const response = await fetch(`${url}/shop/cart/${person.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cart: updatedCart }) });
+            const response = await fetch(`${url}/shop/cart/${person.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cart: newCart }) });
             const responseData = await response.json();
             if(!response.ok && response.status === 500 && !responseData.content){
                 throw new Error('Unable to update person cart');
@@ -461,7 +474,70 @@ export const AppContextProvider = ({ children }) => {
         }
     }
 
-    const value = { isLoading, images, editProduct, deleteProduct, modalAnimation, getProductById, setModalAnimation, setIsLoading, productsPagination, getProductsByAdminId, addToCart, getImages, getImageUrl, addProduct, uploadProductImage, updateProduct, signup, upgrade, requestCategory, requestRegion, forgotPassword, setNewPassword, login, logout, modalRoute, setModalRoute, person, setPerson, products, setProducts, regions, categories, joke, setJoke, modalButtonText, setModalButtonText, modalText, setModalText, modalTitle, setModalTitle, isModalVisible, isDropdownVisible, setIsDropdownVisible, setIsModalVisible, getJoke, getCategories, getRegions, getProducts };
+    const createOrder = async () => {
+        try {
+            setIsLoading(true);
+            const totalPrice = personCart.reduce((tot, item) => tot += item.totalAmount, 0);
+            const productsOrdered = personCart;
+            const sellers = [];
+            for (const a of personCart){
+                const foundSeller = sellers.find((seller) => seller.id === a.creator);
+                if(!foundSeller){
+                    const personId = a.creator;
+                    sellers.push({ id: a.creator, name: a.creatorDetails.name, phoneNumber: a.creatorDetails.phoneNumber, productsOrdered: personCart.filter((prod) => prod.creator === personId) })
+                }
+            }
+            const customerName = person.name;
+            const customerId = person.id;
+            const customerPhoneNumber = person.phoneNumber;
+            const customerEmail = person.email;
+            const order = { totalPrice, productsOrdered, sellers, customerName, customerId, customerPhoneNumber, customerEmail }
+            const response = await fetch(`${url}/shop/order/${customerId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ order }) });
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to create new product');
+            }
+            return responseData;
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const sendEmail = async (email) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`${url}/shop/mail`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to create new product');
+            }
+            return responseData;
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const search = async (text) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`${url}/shop/search`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to create new product');
+            }
+            return responseData;
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const value = { isLoading, createOrder, search, sendEmail, images, personCart, setPersonCart, editProduct, deleteProduct, modalAnimation, getProductById, setModalAnimation, setIsLoading, productsPagination, getProductsByAdminId, addToCart, getImages, getImageUrl, addProduct, uploadProductImage, updateProduct, signup, upgrade, requestCategory, requestRegion, forgotPassword, setNewPassword, login, logout, modalRoute, setModalRoute, person, setPerson, products, setProducts, regions, categories, joke, setJoke, modalButtonText, setModalButtonText, modalText, setModalText, modalTitle, setModalTitle, isModalVisible, isDropdownVisible, setIsDropdownVisible, setIsModalVisible, getJoke, getCategories, getRegions, getProducts };
 
     return (
         <AppContext.Provider value={value}>{children}</AppContext.Provider>

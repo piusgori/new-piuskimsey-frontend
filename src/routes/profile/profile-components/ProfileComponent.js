@@ -15,28 +15,31 @@ const ProfileComponent = () => {
 
     useEffect(() => {
         const myProductsHandler = async () => {
-            try {
-                const data = await getProductsByAdminId(person.id);
-                if(data.content){
-                    for (const i of data.content){
-                        if(i.type === 'Admin'){
-                            setModalTitle('Not existing');
-                            setModalText(i.message);
-                            setModalButtonText('Try Again Later');
-                            setModalRoute('/');
-                            setIsModalVisible(true);
+            if(person.isAdmin){
+                try {
+                    const data = await getProductsByAdminId(person.id);
+                    if(data.content){
+                        for (const i of data.content){
+                            if(i.type === 'Admin'){
+                                setModalTitle('Not existing');
+                                setModalAnimation(2)
+                                setModalText(i.message);
+                                setModalButtonText('Try Again Later');
+                                setModalRoute(null);
+                                setIsModalVisible(true);
+                            }
                         }
+                        return;
                     }
-                    return;
+                    setPersonalProducts(data.products);
+                } catch (err) {
+                    setModalTitle('We are sorry');
+                    setModalAnimation(3);
+                    setModalText('An unexpected error has occured. Sorry About That');
+                    setModalButtonText('Okay');
+                    setModalRoute('/');
+                    setIsModalVisible(true); 
                 }
-                setPersonalProducts(data.products);
-            } catch (err) {
-                setModalTitle('We are sorry');
-                setModalAnimation(3);
-                setModalText('An unexpected error has occured. Sorry About That');
-                setModalButtonText('Okay');
-                setModalRoute('/');
-                setIsModalVisible(true); 
             }
         }
         myProductsHandler();

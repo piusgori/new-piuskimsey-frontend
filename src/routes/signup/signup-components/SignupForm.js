@@ -24,7 +24,7 @@ const SignupForm = () => {
     const [passwordIsValid, setPasswordIsValid] = useState(true);
     const [passwordError, setPasswordError] = useState('');
 
-    const { regions, setModalAnimation, setModalRoute, person, setPerson, isLoading, signup, setModalTitle, setModalText, setModalButtonText, setIsModalVisible } = useContext(AppContext);
+    const { regions, setPersonCart, setModalAnimation, setModalRoute, person, setPerson, isLoading, signup, setModalTitle, setModalText, setModalButtonText, setIsModalVisible } = useContext(AppContext);
     const navigate = useNavigate();
 
     const buttonStyle = { width: '55%', alignSelf: 'center', marginTop: 10 };
@@ -120,6 +120,7 @@ const SignupForm = () => {
         const sessionExpiry = new Date().getTime() + 3600000;
         const createdUser = new User(data.id, data.name, data.email, data.phoneNumber, data.region, null, data.cart, data.orders, data.token, data.isAdmin, sessionExpiry);
         setPerson(createdUser);
+        setPersonCart(data.cart);
         localStorage.setItem('person', JSON.stringify(createdUser));
         setModalTitle('Welcome');
         setModalText('Welcome to Piuskimsey');

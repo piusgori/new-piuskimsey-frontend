@@ -16,7 +16,7 @@ const LoginForm = () => {
     const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
 
-    const { isLoading, setModalAnimation, login, person, setPerson, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext)
+    const { isLoading, setPersonCart, setModalAnimation, login, person, setPerson, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible } = useContext(AppContext)
     const buttonStyle = { width: '55%', alignSelf: 'center', marginTop: 10 }
 
     const checkEmailIsValid = () => {
@@ -65,6 +65,7 @@ const LoginForm = () => {
         const sessionExpiry = new Date().getTime() + 3600000;
         const loggedUser = new User(data.id, data.name, data.email, data.phoneNumber, data.region, data.products, data.cart, data.orders, data.token, data.isAdmin, sessionExpiry)
         setPerson(loggedUser);
+        setPersonCart(data.cart);
         localStorage.setItem('person', JSON.stringify(loggedUser));
         setModalTitle('Welcome Again');
         setModalText('We welcome you back to PiusKimsey');
