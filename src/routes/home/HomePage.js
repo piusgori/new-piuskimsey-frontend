@@ -5,8 +5,10 @@ import Processes from './home-components/Processes';
 import LatestProducts from './home-components/LatestProducts';
 import AboutUs from './home-components/AboutUs';
 import Footer from '../../components/ui/Footer';
+import { title } from '../../utils/title';
 
 const HomePage = () => {
+  title('Pius & Joskimsey');
   return (
     <Fragment>
       <Header></Header>

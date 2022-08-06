@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Card from '../../../components/ui/Card';
 import { AppContext } from '../../../services/app-context';
+import { title } from '../../../utils/title';
 import classes from './CategoryProducts.module.css';
 
 const CategoryProducts = () => {
@@ -24,6 +25,7 @@ const CategoryProducts = () => {
             const isPresent = regExp.test(i.title);
             if(!!isPresent){
                 setSelectedCategory(i.title);
+                title(i.title);
             }
         }
         setIsFilterLoading(false);

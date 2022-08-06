@@ -64,7 +64,7 @@ export const AppContext = createContext({
 
 export const AppContextProvider = ({ children }) => {
 
-    const url = 'http://localhost:8000';
+    const url = 'https://piuskimsey.herokuapp.com';
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [modalTitle, setModalTitle] = useState('Modal Title');

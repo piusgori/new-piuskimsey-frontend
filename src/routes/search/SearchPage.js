@@ -2,11 +2,12 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import ActivityIndicator from '../../components/ui/ActivityIndicator';
 import { AppContext } from '../../services/app-context';
+import { title } from '../../utils/title';
 import SearchInput from './search-components/SearchInput';
 import classes from './SearchPage.module.css';
 
 const SearchPage = () => {
-
+  title('Search');
   const [input, setInput] = useState('');
   const [products, setProducts] = useState([]);
   const [people, setPeople] =useState([]);

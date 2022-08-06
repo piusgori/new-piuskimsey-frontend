@@ -6,6 +6,7 @@ import { AppContext } from '../../../services/app-context';
 import ActivityIndicator from '../../../components/ui/ActivityIndicator';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { title } from '../../../utils/title';
 
 const ProductDetails = () => {
 
@@ -65,6 +66,7 @@ const ProductDetails = () => {
                     return;
                 }
                 const foundProduct = { id: data.id, title: data.title, price: data.price, isDiscount: data.isDiscount, isFinished: data.isFinished, newPrice: data.newPrice, category: data.category, image: data.image, description: data.description, region: data.region, creator: data.creator, creatorDetails: data.creatorDetails, createdAt: data.createdAt };
+                title(data.title);
                 setProduct(foundProduct);
                 const foundUrl = await getImageUrl(data.image);
                 setImageUrl(foundUrl);

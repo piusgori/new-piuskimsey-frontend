@@ -6,39 +6,43 @@ import {  useNavigate } from 'react-router-dom';
 import { AppContext } from '../../../services/app-context';
 import ActivityIndicator from '../../../components/ui/ActivityIndicator';
 import { User } from '../../../models/user';
+import { title } from '../../../utils/title';
 
 const ProfileComponent = () => {
     const navigate = useNavigate();
     const { person, setModalAnimation, getProductsByAdminId, isLoading, upgrade, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, setPerson } = useContext(AppContext);
     const [requestProceed, setRequestProceed] = useState(false);
     const [personalProducts, setPersonalProducts] = useState([]);
+    title(person);
 
     useEffect(() => {
         const myProductsHandler = async () => {
-            if(person.isAdmin){
-                try {
-                    const data = await getProductsByAdminId(person.id);
-                    if(data.content){
-                        for (const i of data.content){
-                            if(i.type === 'Admin'){
-                                setModalTitle('Not existing');
-                                setModalAnimation(2)
-                                setModalText(i.message);
-                                setModalButtonText('Try Again Later');
-                                setModalRoute(null);
-                                setIsModalVisible(true);
+            if(person){
+                if(person.isAdmin){
+                    try {
+                        const data = await getProductsByAdminId(person.id);
+                        if(data.content){
+                            for (const i of data.content){
+                                if(i.type === 'Admin'){
+                                    setModalTitle('Not existing');
+                                    setModalAnimation(2)
+                                    setModalText(i.message);
+                                    setModalButtonText('Try Again Later');
+                                    setModalRoute(null);
+                                    setIsModalVisible(true);
+                                }
                             }
+                            return;
                         }
-                        return;
+                        setPersonalProducts(data.products);
+                    } catch (err) {
+                        setModalTitle('We are sorry');
+                        setModalAnimation(3);
+                        setModalText('An unexpected error has occured. Sorry About That');
+                        setModalButtonText('Okay');
+                        setModalRoute('/');
+                        setIsModalVisible(true); 
                     }
-                    setPersonalProducts(data.products);
-                } catch (err) {
-                    setModalTitle('We are sorry');
-                    setModalAnimation(3);
-                    setModalText('An unexpected error has occured. Sorry About That');
-                    setModalButtonText('Okay');
-                    setModalRoute('/');
-                    setIsModalVisible(true); 
                 }
             }
         }
@@ -129,17 +133,17 @@ const ProfileComponent = () => {
                 <p className={classes.fieldText}>Region:</p>
                 <p className={classes.valueText}>{person.region}</p>
             </div>
-            {!person.isAdmin && !requestProceed && !isLoading && <Button onClick={proceedingHandler}>Become an Admin</Button>}
-            {!person.isAdmin && requestProceed && !isLoading && <div className={classes.proceedContainer}>
+            {person && !person.isAdmin && !requestProceed && !isLoading && <Button onClick={proceedingHandler}>Become an Admin</Button>}
+            {person && !person.isAdmin && requestProceed && !isLoading && <div className={classes.proceedContainer}>
                 <p className={classes.fieldText}>Do you really want to proceed?</p>
                 <div className={classes.proceedButtonContainer}>
                     <Button onClick={upgradeAccountHandler} style={buttonStyle}>Yes</Button>
                     <Button onClick={notProceedingHandler} style={buttonStyle}>No</Button>
                 </div>
             </div>}
-            {!person.isAdmin && isLoading && <ActivityIndicator></ActivityIndicator>}
+            {person && !person.isAdmin && isLoading && <ActivityIndicator></ActivityIndicator>}
         </div>
-        {person.isAdmin && <div>
+        {person && person.isAdmin && <div>
             <h1 className={classes.productsTitle}>My Products</h1>
             {person.isAdmin && isLoading && <ActivityIndicator></ActivityIndicator>}
             {person.isAdmin && !isLoading && <div>

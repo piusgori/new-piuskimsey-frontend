@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ActivityIndicator from '../../../components/ui/ActivityIndicator';
 import Card from '../../../components/ui/Card';
 import { AppContext } from '../../../services/app-context';
+import { title } from '../../../utils/title';
 import classes from './PersonComponent.module.css';
 
 const PersonComponent = () => {
@@ -32,6 +33,7 @@ const PersonComponent = () => {
                 }
                 setProducts(data.products);
                 setName(data.name);
+                title(data.name);
             } catch (err) {
                 setModalAnimation(3);
                 setModalButtonText('Okay');
