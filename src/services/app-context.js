@@ -13,6 +13,7 @@ export const AppContext = createContext({
     regions: [],
     categories: [],
     modalRoute: null,
+    isSubscribingLoading: false,
     isLoading: false,
     setIsLoading: null,
     setPerson: null,
@@ -60,11 +61,13 @@ export const AppContext = createContext({
     getRegions: () => {},
     getProducts: () => {},
     getJoke: () => {},
+    subscribe: () => {},
 })
 
 export const AppContextProvider = ({ children }) => {
 
     const url = 'https://piuskimsey.herokuapp.com';
+    // const url = 'http://localhost:8000';
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [modalTitle, setModalTitle] = useState('Modal Title');
@@ -80,6 +83,7 @@ export const AppContextProvider = ({ children }) => {
     const [personCart, setPersonCart] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [images, setImages] = useState([]);
+    const [isSubscribingLoading, setIsSubscribingLoading] = useState(false);
 
     const getJoke = async () => {
         try {
@@ -537,7 +541,78 @@ export const AppContextProvider = ({ children }) => {
         }
     }
 
-    const value = { isLoading, createOrder, search, sendEmail, images, personCart, setPersonCart, editProduct, deleteProduct, modalAnimation, getProductById, setModalAnimation, setIsLoading, productsPagination, getProductsByAdminId, addToCart, getImages, getImageUrl, addProduct, uploadProductImage, updateProduct, signup, upgrade, requestCategory, requestRegion, forgotPassword, setNewPassword, login, logout, modalRoute, setModalRoute, person, setPerson, products, setProducts, regions, categories, joke, setJoke, modalButtonText, setModalButtonText, modalText, setModalText, modalTitle, setModalTitle, isModalVisible, isDropdownVisible, setIsDropdownVisible, setIsModalVisible, getJoke, getCategories, getRegions, getProducts };
+    const getAdmin = async () => {
+        try {
+            const response = await fetch(`${url}/auth/admin`);
+            const responseData = await response.json();
+            if(!response.ok && response.status === 500 && !responseData.content){
+                throw new Error('Unable to create new product');
+            }
+            const personGot = responseData.admins.find(ad => ad.id === person.id);
+            return personGot;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const subscribe = async () => {
+        try {
+            setIsSubscribingLoading(true);
+            const response = await fetch(`${url}/auth/admin/subscribe/${person.id}`);
+            const responseData = await response.json();
+            if(!response.ok){
+                throw new Error('Unable to update');
+            }
+            
+            const checkIsSubscribed = async () => {
+                const foundPerson = await getAdmin();
+                if(!foundPerson){
+                    setModalTitle('Not Found');
+                    setModalText('We could not find the admin');
+                    setModalAnimation(3);
+                    setModalButtonText('Okay');
+                    setModalRoute('/');
+                    setIsModalVisible(true);
+                } else if(foundPerson) {
+                    const now = new Date().getTime();
+                    const subscriptionDate = new Date(foundPerson.subscription).getTime();
+                    if(now < subscriptionDate){
+                        const updatedUser = new User(person.id, person.name, person.email, person.phoneNumber, person.region, person.products, person.cart, person.orders, person.token, person.isAdmin, person.sessionExpiry, foundPerson.subscription);
+                        setPerson(updatedUser);
+                        localStorage.setItem('person', JSON.stringify(updatedUser));
+                        setModalTitle('Success');
+                        setModalText('You have updated your subscription');
+                        setModalAnimation(1);
+                        setModalButtonText('Okay');
+                        setModalRoute('/');
+                        setIsModalVisible(true);
+                    } else if (now >= subscriptionDate){
+                        setModalTitle('Error');
+                        setModalText('Somehow your subscription has not been updated');
+                        setModalAnimation(3);
+                        setModalButtonText('Okay');
+                        setModalRoute('/');
+                        setIsModalVisible(true);
+                    }
+                }
+                setIsSubscribingLoading(false);
+            }
+            if(responseData.message === 'Successfully sent SDK to admin'){
+                setTimeout(checkIsSubscribed, 20000)
+            }
+            return responseData;
+        } catch (err) {
+            setIsSubscribingLoading(false);
+            setModalTitle('Sorry');
+            setModalText('An Unexpected Error Has Occurred');
+            setModalAnimation(3);
+            setModalButtonText('Okay');
+            setModalRoute('/');
+            setIsModalVisible(true);
+        }
+    }
+
+    const value = { isLoading, isSubscribingLoading, subscribe, createOrder, search, sendEmail, images, personCart, setPersonCart, editProduct, deleteProduct, modalAnimation, getProductById, setModalAnimation, setIsLoading, productsPagination, getProductsByAdminId, addToCart, getImages, getImageUrl, addProduct, uploadProductImage, updateProduct, signup, upgrade, requestCategory, requestRegion, forgotPassword, setNewPassword, login, logout, modalRoute, setModalRoute, person, setPerson, products, setProducts, regions, categories, joke, setJoke, modalButtonText, setModalButtonText, modalText, setModalText, modalTitle, setModalTitle, isModalVisible, isDropdownVisible, setIsDropdownVisible, setIsModalVisible, getJoke, getCategories, getRegions, getProducts };
 
     return (
         <AppContext.Provider value={value}>{children}</AppContext.Provider>

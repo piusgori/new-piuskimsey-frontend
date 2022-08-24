@@ -25,12 +25,22 @@ const Card = ({ product }) => {
     }
 
     const manipulateCartHandler = async (method) => {
+        const now = new Date().getTime();
+        const subscriptionCheck = new Date(product.creatorSubscription).getTime();
         if(!person){
             return navigate('/login');
         } else if (person && person.id === product.creator){
             setModalAnimation(3);
             setModalTitle('Error');
             setModalText('You cannot add to cart your product');
+            setModalRoute(null);
+            setModalButtonText('Okay');
+            setIsModalVisible(true);
+            return;
+        } else if (now >= subscriptionCheck){
+            setModalAnimation(3);
+            setModalTitle('Error');
+            setModalText('The owner of this product has not subscribed yet');
             setModalRoute(null);
             setModalButtonText('Okay');
             setIsModalVisible(true);

@@ -63,7 +63,7 @@ const LoginForm = () => {
           return;
         }
         const sessionExpiry = new Date().getTime() + 3600000;
-        const loggedUser = new User(data.id, data.name, data.email, data.phoneNumber, data.region, data.products, data.cart, data.orders, data.token, data.isAdmin, sessionExpiry)
+        const loggedUser = new User(data.id, data.name, data.email, data.phoneNumber, data.region, data.products, data.cart, data.orders, data.token, data.isAdmin, sessionExpiry, data.subscription);
         setPerson(loggedUser);
         setPersonCart(data.cart);
         localStorage.setItem('person', JSON.stringify(loggedUser));

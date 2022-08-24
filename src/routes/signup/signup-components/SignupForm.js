@@ -118,7 +118,7 @@ const SignupForm = () => {
           return;
         }
         const sessionExpiry = new Date().getTime() + 3600000;
-        const createdUser = new User(data.id, data.name, data.email, data.phoneNumber, data.region, null, data.cart, data.orders, data.token, data.isAdmin, sessionExpiry);
+        const createdUser = new User(data.id, data.name, data.email, data.phoneNumber, data.region, null, data.cart, data.orders, data.token, data.isAdmin, sessionExpiry, data.subscription);
         setPerson(createdUser);
         setPersonCart(data.cart);
         localStorage.setItem('person', JSON.stringify(createdUser));

@@ -1,5 +1,5 @@
 export class User {
-    constructor (id, name, email, phoneNumber, region, products, cart, orders, token, isAdmin, sessionExpiry) {
+    constructor (id, name, email, phoneNumber, region, products, cart, orders, token, isAdmin, sessionExpiry, subscription) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -10,6 +10,7 @@ export class User {
         this.orders = orders;
         this.token = token;
         this.isAdmin = isAdmin;
-        this.sessionExpiry = sessionExpiry
+        this.sessionExpiry = sessionExpiry;
+        this.subscription = subscription
     }
 }

@@ -1,5 +1,5 @@
 export class Product {
-    constructor (id, title, price, isDiscount, isFinished, newPrice, category, image, description, region, creator, creatorDetails, createdAt) {
+    constructor (id, title, price, isDiscount, isFinished, newPrice, category, image, description, region, creator, creatorDetails, createdAt, creatorSubscription) {
         this.id = id;
         this.title = title;
         this.price = price;
@@ -11,6 +11,7 @@ export class Product {
         this.description = description;
         this.region = region;
         this.creator = creator;
+        this.creatorSubscription = creatorSubscription
         this.creatorDetails = creatorDetails;
         this.createdAt = createdAt;
     }

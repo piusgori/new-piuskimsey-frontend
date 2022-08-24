@@ -23,6 +23,7 @@ import NotFoundPage from '../routes/home/NotFoundPage';
 import ProductPage from '../routes/product/ProductPage';
 import EditProductPage from '../routes/product/EditProductPage';
 import PersonPage from '../routes/search/PersonPage';
+import TermsAndConditionsPage from '../routes/terms-and-conditions/TermsAndConditionsPage';
 
 const Routing = () => {
 
@@ -63,6 +64,7 @@ const Routing = () => {
         <Route path='/profile' element={<ProfilePage></ProfilePage>}></Route>
         <Route path='/person/:personId' element={<PersonPage></PersonPage>}></Route>
         <Route path='/cart' element={<CartPage></CartPage>}></Route>
+        <Route path='/terms-and-conditions' element={<TermsAndConditionsPage></TermsAndConditionsPage>}></Route>
         <Route path='/order' element={<OrderPage></OrderPage>}></Route>
         <Route path='*' element={<NotFoundPage></NotFoundPage>}></Route>
       </Routes>

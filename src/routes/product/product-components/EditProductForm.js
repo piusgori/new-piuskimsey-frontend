@@ -107,6 +107,13 @@ const EditProductForm = () => {
               setModalText(i.message);
               setModalTitle('Error');
               setIsModalVisible(true);
+            } else if (i.type === 'subscription') {
+              setModalAnimation(2);
+              setModalButtonText('Okay');
+              setModalRoute('/');
+              setModalText(i.message);
+              setModalTitle('Error');
+              setIsModalVisible(true);
             }
           }
           return; 

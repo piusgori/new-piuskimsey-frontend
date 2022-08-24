@@ -160,6 +160,13 @@ const AddProductForm = () => {
                             setModalButtonText('Okay');
                             setModalRoute(null);
                             setIsModalVisible(true);
+                        } else if (i.type === 'subscription'){
+                            setModalTitle('Error');
+                            setModalText(i.message);
+                            setModalAnimation(3);
+                            setModalButtonText('Okay');
+                            setModalRoute(null);
+                            setIsModalVisible(true);
                         }
                       }
                     return;
@@ -189,7 +196,7 @@ const AddProductForm = () => {
                       } 
                     return;
                 }
-                const createdProduct = new Product(updatingImageName.id, updatingImageName.title, updatingImageName.price, updatingImageName.isDiscount, updatingImageName.isFinished, updatingImageName.newPrice, updatingImageName.category, imageName, updatingImageName.description, updatingImageName.region, updatingImageName.creator, updatingImageName.creatorDetails, updatingImageName.createdAt);
+                const createdProduct = new Product(updatingImageName.id, updatingImageName.title, updatingImageName.price, updatingImageName.isDiscount, updatingImageName.isFinished, updatingImageName.newPrice, updatingImageName.category, imageName, updatingImageName.description, updatingImageName.region, updatingImageName.creator, updatingImageName.creatorDetails, updatingImageName.createdAt, updatingImageName.creatorSubscription);
                 setProducts(prevProducts => [createdProduct, ...prevProducts]);
                 setModalTitle('Success');
                 setModalText('You have successfully added a product');

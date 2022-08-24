@@ -7,13 +7,45 @@ import { AppContext } from '../../../services/app-context';
 import ActivityIndicator from '../../../components/ui/ActivityIndicator';
 import { User } from '../../../models/user';
 import { title } from '../../../utils/title';
+import { Link } from 'react-router-dom'
+import { dayName } from '../../../utils/day';
 
 const ProfileComponent = () => {
     const navigate = useNavigate();
-    const { person, setModalAnimation, getProductsByAdminId, isLoading, upgrade, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, setPerson } = useContext(AppContext);
+    const { person, isSubscribingLoading, subscribe, setModalAnimation, getProductsByAdminId, isLoading, upgrade, setModalTitle, setModalText, setModalButtonText, setModalRoute, setIsModalVisible, setPerson } = useContext(AppContext);
     const [requestProceed, setRequestProceed] = useState(false);
     const [personalProducts, setPersonalProducts] = useState([]);
-    title(person);
+    title('Profile');
+
+    const isSubscribed = () => {
+        if(person.isAdmin){
+            const now = new Date().getTime();
+            const subscriptionExpiryDate = new Date(person.subscription).getTime();
+            if(now < subscriptionExpiryDate){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    const makeSubscriptionHandler = async () => {
+        await subscribe();
+    }
+
+    let subscriptionStatus;
+    let year;
+    let month;
+    let date;
+    let day;
+
+    if(person && person.isAdmin){
+        subscriptionStatus = isSubscribed();
+        year = new Date(person.subscription).getUTCFullYear();
+        month = new Date(person.subscription).getUTCMonth() + 1;
+        date = new Date(person.subscription).getUTCDate();
+        day = dayName(Number(new Date(person.subscription).getUTCDay()));
+    }
 
     useEffect(() => {
         const myProductsHandler = async () => {
@@ -116,7 +148,8 @@ const ProfileComponent = () => {
   return (
     <div className={classes.container}>
         <h1 className={classes.title}>My Profile</h1>
-        <div className={classes.detailContainer}>
+        {isSubscribingLoading && <ActivityIndicator></ActivityIndicator>}
+        {!isSubscribingLoading && <div className={classes.detailContainer}>
             <div className={classes.fieldContainer}>
                 <p className={classes.fieldText}>Name:</p>
                 <p className={classes.valueText}>{person.name}</p>
@@ -133,17 +166,23 @@ const ProfileComponent = () => {
                 <p className={classes.fieldText}>Region:</p>
                 <p className={classes.valueText}>{person.region}</p>
             </div>
+            {person && person.isAdmin && <div className={classes.fieldContainer}>
+                <p className={classes.fieldText}>Subscription Expiry:</p>
+                <p className={classes.valueText}>{day}, {date}-{month}-{year}</p>
+            </div>}
+            {person && person.isAdmin && !subscriptionStatus && <Button onClick={makeSubscriptionHandler}>Make Subscription</Button>}
             {person && !person.isAdmin && !requestProceed && !isLoading && <Button onClick={proceedingHandler}>Become an Admin</Button>}
             {person && !person.isAdmin && requestProceed && !isLoading && <div className={classes.proceedContainer}>
                 <p className={classes.fieldText}>Do you really want to proceed?</p>
+                <p className={classes.fieldText}>Please ensure you have read our <Link className={classes.fieldLink} to='/terms-and-conditions'>terms and conditions</Link> before you proceed.</p>
                 <div className={classes.proceedButtonContainer}>
                     <Button onClick={upgradeAccountHandler} style={buttonStyle}>Yes</Button>
                     <Button onClick={notProceedingHandler} style={buttonStyle}>No</Button>
                 </div>
             </div>}
             {person && !person.isAdmin && isLoading && <ActivityIndicator></ActivityIndicator>}
-        </div>
-        {person && person.isAdmin && <div>
+        </div>}
+        {!isSubscribingLoading && person && person.isAdmin && <div>
             <h1 className={classes.productsTitle}>My Products</h1>
             {person.isAdmin && isLoading && <ActivityIndicator></ActivityIndicator>}
             {person.isAdmin && !isLoading && <div>
