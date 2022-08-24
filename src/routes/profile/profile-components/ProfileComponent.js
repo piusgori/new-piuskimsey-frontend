@@ -106,7 +106,7 @@ const ProfileComponent = () => {
                 return;
             }
             const sessionExpiry = new Date().getTime() + 3600000;
-            const upgradedUser = new User(data.id, data.name, data.email, data.phoneNumber, data.region, data.products, data.cart, data.orders, data.token, data.isAdmin, sessionExpiry);
+            const upgradedUser = new User(data.id, data.name, data.email, data.phoneNumber, data.region, data.products, data.cart, data.orders, data.token, data.isAdmin, sessionExpiry, data.subscription);
             setPerson(upgradedUser);
             const foundUser = localStorage.getItem('person');
             if(foundUser){
