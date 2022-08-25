@@ -3,6 +3,7 @@ import piusImage from '../images/pius-icon.png';
 import classes from './Preloader.module.css';
 
 const Preloader = () => {
+  
   return (
     <div className={classes.container}>
       <div className={classes.ring}></div>

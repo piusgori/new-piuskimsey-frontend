@@ -10,7 +10,7 @@ const AboutUs = () => {
         </div>
         <div className={classes.aboutContainer}>
             <h1 className={classes.aboutTitle}>Our Ambition</h1>
-            <p className={classes.aboutText}>Spread out to the whole country to ease the activities of those who need it</p>
+            <p className={classes.aboutText}>We are bringing the world right at the comfort of your zone.</p>
         </div>
     </div>
   )
