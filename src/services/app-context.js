@@ -66,7 +66,7 @@ export const AppContext = createContext({
 
 export const AppContextProvider = ({ children }) => {
 
-    const url = 'https://piuskimsey.herokuapp.com';
+    const url = 'https://piuskimsey-server.onrender.com';
     // const url = 'http://localhost:8000';
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
